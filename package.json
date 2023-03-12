@@ -2,9 +2,10 @@
   "name": "meals-app",
   "version": "0.1.0",
   "scripts": {
-    "clean": "rescript clean",
+    "clean": "npx rescript clean -with-deps",
     "build": "rescript build",
-    "watch": "rescript build -w"
+    "watch": "rescript build -w",
+    "serve": "npx webpack serve"
   },
   "keywords": [
     "ReScript"
