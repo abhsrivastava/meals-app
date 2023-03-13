@@ -2,5 +2,10 @@
 
 @react.component
 let make = () => {
-  <div>{"App"->React.string}</div>
+  <main>
+    <Search />
+    <Favorites />
+    <Meals />
+    <Modal />
+  </main>
 }

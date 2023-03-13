@@ -2,6 +2,7 @@
 
 import * as App from "./App.bs.js";
 import * as React from "react";
+import * as ThemeContext from "./ThemeContext.bs.js";
 import * as Client from "react-dom/client";
 
 var rootElement = document.querySelector("#main");
@@ -9,7 +10,12 @@ var rootElement = document.querySelector("#main");
 if (rootElement == null) {
   console.log("Could not find the main div");
 } else {
-  Client.createRoot(rootElement).render(React.createElement(App.make, {}));
+  Client.createRoot(rootElement).render(React.createElement(React.StrictMode, {
+            children: React.createElement(ThemeContext.Provider.make, {
+                  value: "Hello World",
+                  children: React.createElement(App.make, {})
+                })
+          }));
 }
 
 export {
