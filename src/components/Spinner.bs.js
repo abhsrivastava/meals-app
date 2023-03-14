@@ -2,8 +2,13 @@
 
 import * as React from "react";
 
+import '../styles/Spinner.css'
+;
+
 function Spinner(props) {
-  return React.createElement("div", undefined, "Getting data from API....");
+  return React.createElement("div", {
+              className: "loader"
+            });
 }
 
 var make = Spinner;
@@ -11,4 +16,4 @@ var make = Spinner;
 export {
   make ,
 }
-/* react Not a pure module */
+/*  Not a pure module */
