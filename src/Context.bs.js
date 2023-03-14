@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-var context = React.createContext("test");
+var context = React.createContext(/* NotAsked */0);
 
 var make = context.Provider;
 

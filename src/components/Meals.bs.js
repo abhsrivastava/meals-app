@@ -2,11 +2,26 @@
 
 import * as React from "react";
 import * as Context from "../Context.bs.js";
+import * as Pervasives from "rescript/lib/es6/pervasives.js";
 
 function Meals(props) {
   var context = Context.useGlobalContext(undefined);
-  console.log("Inside Meals Context is: " + context + "");
-  return React.createElement("div", undefined, "Meals");
+  if (typeof context === "number") {
+    return Pervasives.failwith("should not come here as App is called only on Success");
+  }
+  if (context.TAG === /* GotError */0) {
+    return Pervasives.failwith("should not come here as App is called only on Success");
+  }
+  var data = context._0;
+  console.log("Size of Array " + String(data.length) + "");
+  return data.map(function (user, i) {
+              return React.createElement("div", {
+                          key: String(i),
+                          id: String(i)
+                        }, React.createElement("p", undefined, user.fullName), React.createElement("img", {
+                              src: user.thumbnail
+                            }));
+            });
 }
 
 var make = Meals;

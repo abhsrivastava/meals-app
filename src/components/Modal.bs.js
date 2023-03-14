@@ -4,8 +4,7 @@ import * as React from "react";
 import * as Context from "../Context.bs.js";
 
 function Modal(props) {
-  var context = Context.useGlobalContext(undefined);
-  console.log("insise Modal Context is: " + context + "");
+  Context.useGlobalContext(undefined);
   return React.createElement("div", undefined, "Modal");
 }
 

@@ -1,6 +1,5 @@
 @react.component
 let make = () => {
-  let context = Context.useGlobalContext()
-  Js.Console.log(`Inside Search Context is: ${context}`)
+  let _ = Context.useGlobalContext()
   <div>{"Search"->React.string}</div>
 }

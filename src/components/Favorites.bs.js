@@ -4,8 +4,7 @@ import * as React from "react";
 import * as Context from "../Context.bs.js";
 
 function Favorites(props) {
-  var context = Context.useGlobalContext(undefined);
-  console.log("Inside Favorites Context is: " + context + "");
+  Context.useGlobalContext(undefined);
   return React.createElement("div", undefined, "Favorites");
 }
 

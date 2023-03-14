@@ -1,6 +1,5 @@
 @react.component
 let make = () => {
-  let context = Context.useGlobalContext()
-  Js.Console.log(`insise Modal Context is: ${context}`)
+  let _ = Context.useGlobalContext()
   <div>{"Modal"->React.string}</div>
 }
