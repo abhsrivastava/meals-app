@@ -5,8 +5,14 @@ module Root = {
     let (state, setState) = React.useState(() => Context.NotAsked)
     let _ = React.useEffect0(() => {
       open Js.Promise2
-      let sequence = () => User.getUser()
-      sequence() -> then(user => setState(_ => GotResult(user)) -> resolve) -> ignore
+      Meal.getRandomMeal() -> then(mealResponse => {
+        switch mealResponse {
+        | Belt.Result.Ok(mealsArray) => Context.GotResult(mealsArray)
+        | Belt.Result.Error(msg) => Context.GotError(msg)
+        }
+      } -> resolve)
+      -> then(contextResult => setState(_ => contextResult) -> resolve) 
+      -> ignore
       None
     })    
     switch state {

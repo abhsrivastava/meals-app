@@ -1,7 +1,7 @@
 type state = 
   | NotAsked
   | GotError(string)
-  | GotResult(array<User.user>)
+  | GotResult(array<Meal.meal>)
 
 let context = React.createContext(NotAsked)
 // wrapped in provider so that we can use this as an element

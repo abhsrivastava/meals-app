@@ -1,15 +1,14 @@
 @react.component
 let make = () => {
-  let context = Context.useGlobalContext()
-  switch context {
-  | GotResult(data) =>
+  switch Context.useGlobalContext() {
+  | GotResult(mealsArray) =>
     {
-      `Size of Array ${data -> Js.Array2.length -> Belt.Int.toString}`->Js.Console.log
-      data 
-      -> Js.Array2.mapi((user, i) => 
+      `Size of Array ${mealsArray -> Js.Array2.length -> Belt.Int.toString}`->Js.Console.log
+      mealsArray 
+      -> Js.Array2.mapi((meal, i) => 
           <div key={i -> Belt.Int.toString} id={i -> Belt.Int.toString}>
-            <p>{user.fullName -> React.string}</p>
-            <img src={user.thumbnail} />
+            <p>{meal.mealName -> React.string}</p>
+            <img src={meal.thumbnail} />
           </div>
         ) 
       -> React.array

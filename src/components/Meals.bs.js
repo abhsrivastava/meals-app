@@ -5,21 +5,21 @@ import * as Context from "../Context.bs.js";
 import * as Pervasives from "rescript/lib/es6/pervasives.js";
 
 function Meals(props) {
-  var context = Context.useGlobalContext(undefined);
-  if (typeof context === "number") {
+  var mealsArray = Context.useGlobalContext(undefined);
+  if (typeof mealsArray === "number") {
     return Pervasives.failwith("should not come here as App is called only on Success");
   }
-  if (context.TAG === /* GotError */0) {
+  if (mealsArray.TAG === /* GotError */0) {
     return Pervasives.failwith("should not come here as App is called only on Success");
   }
-  var data = context._0;
-  console.log("Size of Array " + String(data.length) + "");
-  return data.map(function (user, i) {
+  var mealsArray$1 = mealsArray._0;
+  console.log("Size of Array " + String(mealsArray$1.length) + "");
+  return mealsArray$1.map(function (meal, i) {
               return React.createElement("div", {
                           key: String(i),
                           id: String(i)
-                        }, React.createElement("p", undefined, user.fullName), React.createElement("img", {
-                              src: user.thumbnail
+                        }, React.createElement("p", undefined, meal.mealName), React.createElement("img", {
+                              src: meal.thumbnail
                             }));
             });
 }
