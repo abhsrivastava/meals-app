@@ -7,6 +7,7 @@ import * as $$Error from "./components/Error.bs.js";
 import * as React from "react";
 import * as Context from "./Context.bs.js";
 import * as Spinner from "./components/Spinner.bs.js";
+import * as Category from "./data/Category.bs.js";
 import * as Js_promise2 from "rescript/lib/es6/js_promise2.js";
 import * as Client from "react-dom/client";
 
@@ -18,15 +19,25 @@ function Index$Root(props) {
   var state = match[0];
   React.useEffect((function () {
           Js_promise2.then(Js_promise2.then(Meal.getRandomMeal(undefined), (function (mealResponse) {
-                      var tmp;
-                      tmp = mealResponse.TAG === /* Ok */0 ? ({
-                            TAG: /* GotResult */1,
-                            _0: mealResponse._0
-                          }) : ({
-                            TAG: /* GotError */0,
-                            _0: mealResponse._0
-                          });
-                      return Promise.resolve(tmp);
+                      if (mealResponse.TAG !== /* Ok */0) {
+                        return Promise.resolve({
+                                    TAG: /* GotError */0,
+                                    _0: mealResponse._0
+                                  });
+                      }
+                      var mealsArray = mealResponse._0;
+                      return Js_promise2.then(Category.getCategoryList(undefined), (function (categoryResponse) {
+                                    var tmp;
+                                    tmp = categoryResponse.TAG === /* Ok */0 ? ({
+                                          TAG: /* GotResult */1,
+                                          meals: mealsArray,
+                                          categories: categoryResponse._0
+                                        }) : ({
+                                          TAG: /* GotError */0,
+                                          _0: categoryResponse._0
+                                        });
+                                    return Promise.resolve(tmp);
+                                  }));
                     })), (function (contextResult) {
                   return Promise.resolve(Curry._1(setState, (function (param) {
                                     return contextResult;

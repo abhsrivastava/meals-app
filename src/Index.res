@@ -7,18 +7,28 @@ module Root = {
       open Js.Promise2
       Meal.getRandomMeal() -> then(mealResponse => {
         switch mealResponse {
-        | Belt.Result.Ok(mealsArray) => Context.GotResult(mealsArray)
-        | Belt.Result.Error(msg) => Context.GotError(msg)
+        | Belt.Result.Ok(mealsArray) => // so the calls for meals array is successful. now let's make the call for Categories
+          Category.getCategoryList() -> then (categoryResponse => {
+            switch categoryResponse {
+            | Belt.Result.Ok(categoryArray) => 
+              Context.GotResult({
+                meals: mealsArray,
+                categories: categoryArray
+              })
+            | Belt.Result.Error(e) => Context.GotError(e)
+            }
+          } -> resolve)
+        | Belt.Result.Error(msg) => Context.GotError(msg) -> resolve
         }
-      } -> resolve)
+      })
       -> then(contextResult => setState(_ => contextResult) -> resolve) 
       -> ignore
       None
-    })    
+    })
     switch state {
     | NotAsked => <Spinner />
     | GotError(e) => <Error msg={e} />
-    | GotResult(_) => <Context.Provider value={state}><App /></Context.Provider>
+    | _ => <Context.Provider value={state}><App /></Context.Provider>
     }
   }
 }
