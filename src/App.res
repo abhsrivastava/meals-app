@@ -7,7 +7,7 @@ let make = () => {
     <main>
       <Search />
       <Favorites />
-      <Meals meals/>
+      <MealSummary meals/>
       <Modal />
     </main>
   | _ => failwith("cannot come here as the root component does not send the call here if we didn't get result")

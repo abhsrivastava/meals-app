@@ -1,6 +1,8 @@
 open Js.Json
+open Js.Promise2
+open Fetch
 
-type meal = {
+type mealDetail = {
   id: int,
   mealName: string,
   category: string,
@@ -11,6 +13,13 @@ type meal = {
   youtubeLink: option<string>,
   ingredientAndMeasures: array<(string, string)>
 }
+
+type mealSummary = {
+  id: int, 
+  mealName: string,
+  thumbnail: string
+}
+
 exception PARSE_FAILED(string)
 
 let getValue = (obj: Js.Dict.t<Js.Json.t>, key: string) : string => {
@@ -18,13 +27,24 @@ let getValue = (obj: Js.Dict.t<Js.Json.t>, key: string) : string => {
   | Some(valueObj) => 
     switch valueObj -> classify {
     | JSONString(value) => value
+    | JSONNull => ""
     | _ => raise(PARSE_FAILED(`value of ${key} is not a string`))
     }
   | None => raise(PARSE_FAILED(`${key} not found in meal json`))
   }
 }
 
-let parseMeal = (json: Js.Json.t): meal => {
+let parseMealSummary = (json: Js.Json.t) : mealSummary => {
+  switch json -> classify {
+  | JSONObject(obj) => 
+    let id = obj -> getValue("idMeal") -> Belt.Int.fromString -> Belt.Option.getExn
+    let mealName = obj -> getValue("strMeal")
+    let thumbnail = obj -> getValue("strMealThumb")
+    {id, mealName, thumbnail}
+  | _ => raise(PARSE_FAILED("Meals is not an object"))
+  }
+}
+let parseMealDetail = (json: Js.Json.t): mealDetail => {
   switch json -> classify {
   | JSONObject(obj) => 
     let id = obj -> getValue("idMeal") -> Belt.Int.fromString -> Belt.Option.getExn
@@ -62,7 +82,7 @@ let parseMeal = (json: Js.Json.t): meal => {
   | _ => raise(PARSE_FAILED("Meal is not an object"))
   }
 }
-let parseResponse = (json: Js.Json.t) : Belt.Result.t<array<meal>, string> => {
+let parseResponse = (json: Js.Json.t, func: Js.Json.t => 'a) : result<array<'a>, string> => {
   // first let us log the json as-is
   json -> Js.Json.stringify -> Js.Console.log
   try {
@@ -73,7 +93,7 @@ let parseResponse = (json: Js.Json.t) : Belt.Result.t<array<meal>, string> => {
       switch mealsArray -> classify {
       | JSONArray(array) => 
         array -> Js.Array2.map(meal => {
-          meal -> parseMeal
+          meal -> func
         }) -> Ok
       | _ => raise(PARSE_FAILED("Value of meals key should be an array"))
       }
@@ -87,11 +107,16 @@ let parseResponse = (json: Js.Json.t) : Belt.Result.t<array<meal>, string> => {
   }
 }
 
-let getRandomMeal = () : promise<Belt.Result.t<array<meal>, string>> => {
-  open Js.Promise2
-  open Fetch
+let getRandomMeal = () : promise<result<array<mealDetail>, string>> => {
   "https://www.themealdb.com/api/json/v1/1/random.php" 
   -> get 
   -> then(Response.json) 
-  -> then(json => {parseResponse(json) -> resolve})
+  -> then(json => {parseResponse(json, json => parseMealDetail(json)) -> resolve})
+}
+
+let getMealsForCategory = (category: string) : promise<result<array<mealSummary>, string>> => {
+  `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
+  -> get
+  -> then(Response.json)
+  ->then(json => {parseResponse(json, json => parseMealSummary(json)) -> resolve})
 }

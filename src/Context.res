@@ -2,8 +2,9 @@ type state =
   | NotAsked
   | GotError(string)
   | GotResult({
-    meals: array<Meal.meal>,
-    categories: array<Category.category>
+    meals: array<Meal.mealSummary>,
+    categories: array<Category.category>,
+    areas: array<string>
   })
 
 let context = React.createContext(NotAsked)

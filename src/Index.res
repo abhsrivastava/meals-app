@@ -5,19 +5,26 @@ module Root = {
     let (state, setState) = React.useState(() => Context.NotAsked)
     let _ = React.useEffect0(() => {
       open Js.Promise2
-      Meal.getRandomMeal() -> then(mealResponse => {
+      Meal.getMealsForCategory("Lamb") -> then(mealResponse => {
         switch mealResponse {
         | Belt.Result.Ok(mealsArray) => // so the calls for meals array is successful. now let's make the call for Categories
           Category.getCategoryList() -> then (categoryResponse => {
             switch categoryResponse {
             | Belt.Result.Ok(categoryArray) => 
-              Context.GotResult({
-                meals: mealsArray,
-                categories: categoryArray
+              Area.getAreaList() -> then(areaResponse => {
+                switch areaResponse {
+                | Ok(areaArray) =>
+                  Context.GotResult({
+                    meals: mealsArray,
+                    categories: categoryArray,
+                    areas: areaArray
+                  }) -> resolve
+                | Error(e) => Context.GotError(e) -> resolve
+                }
               })
-            | Belt.Result.Error(e) => Context.GotError(e)
+            | Belt.Result.Error(e) => Context.GotError(e) -> resolve
             }
-          } -> resolve)
+          })
         | Belt.Result.Error(msg) => Context.GotError(msg) -> resolve
         }
       })
