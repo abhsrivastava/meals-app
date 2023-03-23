@@ -1,11 +1,7 @@
-
+open Js.Promise2
 module Root = {
-  @react.component
-  let make = () => {
-    let (state, setState) = React.useState(() => Context.NotAsked)
-    let _ = React.useEffect0(() => {
-      open Js.Promise2
-      Meal.getMealsForCategory("Lamb") -> then(mealResponse => {
+  let getDefaultState = (category) : promise<Context.state> => {
+      Meal.getMealsForCategory(category) -> then(mealResponse => {
         switch mealResponse {
         | Belt.Result.Ok(mealsArray) => // so the calls for meals array is successful. now let's make the call for Categories
           Category.getCategoryList() -> then (categoryResponse => {
@@ -28,6 +24,12 @@ module Root = {
         | Belt.Result.Error(msg) => Context.GotError(msg) -> resolve
         }
       })
+  }
+  @react.component
+  let make = (~category = "Lamb") => {
+    let (state, setState) = React.useState(() => Context.NotAsked)
+    let _ = React.useEffect0(() => {
+      getDefaultState(category)
       -> then(contextResult => setState(_ => contextResult) -> resolve) 
       -> ignore
       None

@@ -10,7 +10,7 @@ let make = (~meals: array<Meal.mealSummary>) => {
         <img src={meal.thumbnail} className="img" />
         <footer>
           <h5>{meal.mealName -> React.string}</h5>
-          <button className="like-btn"><BsHandsThumbsUp /></button>
+          <button className="like-btn"><BsHandThumbsUpFill /></button>
         </footer>
       </article>
     ) 
