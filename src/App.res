@@ -1,11 +1,11 @@
 %%raw("import './styles/App.css'")
 
 @react.component
-let make = (~handleSearchTermChange) => {
+let make = (~handleSearchTermChange, ~searchTerm) => {
   switch Context.useGlobalContext() {
   | GotResult({meals, _}) => 
     <main>
-      <Search handleSearchTermChange />
+      <Search handleSearchTermChange searchTerm />
       <Favorites />
       <MealSummary meals/>
       <Modal />

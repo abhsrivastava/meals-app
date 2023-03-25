@@ -1,7 +1,7 @@
 @react.component
-let make = (~handleSearchTermChange) => {
+let make = (~handleSearchTermChange, ~searchTerm) => {
   let _ = Context.useGlobalContext()
-  let (text, setText) = React.useState(() => "")
+  let (text, setText) = React.useState(() => searchTerm)
   
   let handleTextChange = (event) => {
     let newText = ReactEvent.Form.currentTarget(event)["value"]
@@ -9,9 +9,13 @@ let make = (~handleSearchTermChange) => {
   }
 
   let handleSubmit = (event) => {
-    Js.Console.log("came inside handle submit event")
     ReactEvent.Form.preventDefault(event)
-    handleSearchTermChange(text)
+    handleSearchTermChange(Context.Ingredient(text))
+  }
+
+  let handleClick = (_) => {
+    Js.Console.log("going to get random meal")
+    handleSearchTermChange(Context.RandomMeal)
   }
 
   <header className="search-container">
@@ -28,8 +32,8 @@ let make = (~handleSearchTermChange) => {
         className="btn">{"search"->React.string}</button>
       <button 
         type_="button" 
-        onSubmit={handleSubmit}
-        className="btn">{"surprise me1"->React.string}</button>
+        onClick={handleClick}
+        className="btn btn-hipster">{"surprise me"->React.string}</button>
     </form>
   </header>
 }

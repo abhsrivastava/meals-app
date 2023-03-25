@@ -1,7 +1,8 @@
 open Js.Promise2
 module Root = {
-  let getDefaultState = (category) : promise<Context.state> => {
-      Meal.getMealsForIngredient(category) -> then(mealResponse => {
+  let getDefaultState = (searchTerm) : promise<Context.state> => {
+      if (searchTerm != "") {Meal.getMealsForIngredient(searchTerm)} else {Meal.getRandomMeal()}
+      -> then(mealResponse => {
         switch mealResponse {
         | Belt.Result.Ok(mealsArray) => // so the calls for meals array is successful. now let's make the call for Categories
           Category.getCategoryList() -> then (categoryResponse => {
@@ -29,8 +30,11 @@ module Root = {
   let make = () => {
     // state for search term
     let (searchTerm, setSearchTerm) = React.useState(() => "chicken")
-    let handleSearchTermChange = (newSearchTerm: string) => {
-      setSearchTerm(_ => newSearchTerm)
+    let handleSearchTermChange = (msg: Context.msg) => {
+      switch msg {
+        | Context.RandomMeal => setSearchTerm(_ => "")
+        | Context.Ingredient(ingredient) => setSearchTerm(_ => ingredient)
+      }
     }
     let (state, setState) = React.useState(() => Context.NotAsked)
     let _ = React.useEffect1(() => {
@@ -42,7 +46,7 @@ module Root = {
     switch state {
     | NotAsked => <Spinner />
     | GotError(e) => <Error msg={e} />
-    | _ => <Context.Provider value={state}><App handleSearchTermChange/></Context.Provider>
+    | _ => <Context.Provider value={state}><App handleSearchTermChange searchTerm/></Context.Provider>
     }
   }
 }

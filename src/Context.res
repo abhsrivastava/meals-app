@@ -1,3 +1,7 @@
+type msg = 
+  | RandomMeal 
+  | Ingredient(string)
+
 type state = 
   | NotAsked
   | GotError(string)
