@@ -83,8 +83,6 @@ let parseMealDetail = (json: Js.Json.t): mealDetail => {
   }
 }
 let parseResponse = (json: Js.Json.t, func: Js.Json.t => 'a) : result<array<'a>, string> => {
-  // first let us log the json as-is
-  json -> Js.Json.stringify -> Js.Console.log
   try {
   switch json -> classify {
   | JSONObject(obj) =>
@@ -107,15 +105,15 @@ let parseResponse = (json: Js.Json.t, func: Js.Json.t => 'a) : result<array<'a>,
   }
 }
 
-let getRandomMeal = () : promise<result<array<mealDetail>, string>> => {
+let getRandomMeal = () : promise<result<array<mealSummary>, string>> => {
   "https://www.themealdb.com/api/json/v1/1/random.php" 
   -> get 
   -> then(Response.json) 
-  -> then(json => {parseResponse(json, json => parseMealDetail(json)) -> resolve})
+  -> then(json => {parseResponse(json, json => parseMealSummary(json)) -> resolve})
 }
 
-let getMealsForCategory = (category: string) : promise<result<array<mealSummary>, string>> => {
-  `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
+let getMealsForIngredient = (ingredient: string) : promise<result<array<mealSummary>, string>> => {
+  `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`
   -> get
   -> then(Response.json)
   ->then(json => {parseResponse(json, json => parseMealSummary(json)) -> resolve})

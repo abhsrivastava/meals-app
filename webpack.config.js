@@ -36,6 +36,6 @@ module.exports = {
       directory: outputDir
     },
     compress: true,
-    port: 8001
+    port: 8000
   }
 }

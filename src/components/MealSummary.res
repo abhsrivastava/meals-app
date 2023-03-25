@@ -2,7 +2,6 @@ open ReactIcons
 
 @react.component
 let make = (~meals: array<Meal.mealSummary>) => {
-  `Size of Array ${meals -> Js.Array2.length -> Belt.Int.toString}`->Js.Console.log
   <section className="section-center">
   {meals 
   -> Js.Array2.mapi((meal, i) => 
