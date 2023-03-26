@@ -116,5 +116,16 @@ let getMealsForIngredient = (ingredient: string) : promise<result<array<mealSumm
   `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`
   -> get
   -> then(Response.json)
-  ->then(json => {parseResponse(json, json => parseMealSummary(json)) -> resolve})
+  -> then(json => {parseResponse(json, json => parseMealSummary(json)) -> resolve})
+}
+
+let getMealById = (id: int) : promise<result<mealDetail, string>> => {
+  `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id -> Belt.Int.toString}`
+  -> get
+  -> then(Response.json)
+  -> then (json => {
+      switch parseResponse(json, json => parseMealDetail(json)) {
+      | Ok(mealsArray) => Ok(mealsArray -> Belt.Array.get(0) -> Belt.Option.getExn)
+      | Error(e) => Error(e)
+      } -> resolve})
 }

@@ -30,10 +30,16 @@ module Root = {
   let make = () => {
     // state for search term
     let (searchTerm, setSearchTerm) = React.useState(() => "chicken")
+    let (showModal, setShowModal) = React.useState(() => false)
+    let (selectedMeal, setSelectedMeal) = React.useState(() => 0)
+
     let handleSearchTermChange = (msg: Context.msg) => {
       switch msg {
         | Context.RandomMeal => setSearchTerm(_ => "")
         | Context.Ingredient(ingredient) => setSearchTerm(_ => ingredient)
+        | Context.SelectedMeal(id) => 
+          setShowModal(_ => true)
+          setSelectedMeal(_ => id)
       }
     }
     let (state, setState) = React.useState(() => Context.NotAsked)
@@ -46,7 +52,7 @@ module Root = {
     switch state {
     | NotAsked => <Spinner />
     | GotError(e) => <Error msg={e} />
-    | _ => <Context.Provider value={state}><App handleSearchTermChange searchTerm/></Context.Provider>
+    | _ => <Context.Provider value={state}><App handleSearchTermChange searchTerm showModal setShowModal/></Context.Provider>
     }
   }
 }

@@ -1,6 +1,7 @@
 type msg = 
   | RandomMeal 
   | Ingredient(string)
+  | SelectedMeal(int)
 
 type state = 
   | NotAsked
