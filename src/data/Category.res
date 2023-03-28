@@ -78,7 +78,7 @@ let parseResponse = (json: Js.Json.t) : Belt.Result.t<array<category>, string> =
   }
 }
 
-let getCategoryList = () : promise<Belt.Result.t<array<category>, string>> => {
+let getCategoryList = () : promise<result<array<category>, string>> => {
   open Fetch
   open Js.Promise2
   "https://www.themealdb.com/api/json/v1/1/categories.php"
