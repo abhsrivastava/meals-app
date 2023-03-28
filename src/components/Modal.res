@@ -22,6 +22,13 @@ let make = (~selectedMeal:int, ~setShowModal) => {
     -> ignore
     None
   })
+  let nullOrEmpty = (item: option<string>) : bool => {
+    switch item {
+    | Some(x) => 
+      if (x == "") { false } else { true }
+    | None => false
+    }
+  } 
   switch mealDetailResult {
   | Asked => <Spinner />
   | GotError(e) => <Error msg={e} />
@@ -34,22 +41,25 @@ let make = (~selectedMeal:int, ~setShowModal) => {
           <p>{"Cooking Instructions"->React.string}</p>
           <p>{md.instructions -> React.string}</p>
           {
-            switch md.youtubeLink {
-            | Some(link) => 
+            switch nullOrEmpty(md.youtubeLink) {
+            | true => 
               <div>
-                <p>{"youtube" -> React.string}</p>
-                <a href={link} target="_blank" />
+                <a href={md.youtubeLink -> Belt.Option.getExn} target="_blank">
+                  {"youtube" -> React.string}
+                </a>
               </div>
-            | None => <div />
+            | false => <div />
             }
           }
           <p>{"Ingredients and Measures" -> React.string}</p>
           <ul>
-          {md.ingredientAndMeasures -> Belt.Array.map(((ingredient, measure)) => 
-            <li>{ingredient -> React.string} {" " -> React.string}<b>{measure -> React.string}</b></li>
+          {md.ingredientAndMeasures -> Belt.Array.mapWithIndex((index, (ingredient, measure)) => 
+            <li key={index -> Belt.Int.toString}>
+              {ingredient -> React.string} {" " -> React.string}<b>{measure -> React.string}</b>
+            </li>
            ) -> React.array}
           </ul>
-          <button type_="button" onClick={handleClick}>{"Close" -> React.string}</button>
+          <button type_="button" onClick={handleClick} className="btn btn-hipster close-btn">{"Close" -> React.string}</button>
         </div>
       </div>
     </aside>

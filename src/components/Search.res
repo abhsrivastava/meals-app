@@ -14,7 +14,6 @@ let make = (~handleSearchTermChange, ~searchTerm) => {
   }
 
   let handleClick = (_) => {
-    Js.Console.log("going to get random meal")
     handleSearchTermChange(Context.RandomMeal)
   }
 

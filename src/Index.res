@@ -68,5 +68,7 @@ switch ReactDOM.querySelector("#main") {
         <Root />
     </React.StrictMode>
   )
-| None => Js.Console.log("Could not find the main div")
+| None => 
+  Js.Console.log("Could not find the main div") -> ignore
+  failwith("Could not find the main div")
 }
