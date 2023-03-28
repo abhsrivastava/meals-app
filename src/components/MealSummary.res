@@ -3,9 +3,9 @@ open ReactIcons
 @react.component
 let make = (~meals: array<Meal.mealSummary>, ~setSelectedMeal) => {
   let handleClick = (event: ReactEvent.Mouse.t) => {
-    let id = ReactEvent.Mouse.currentTarget(event)["id"] 
-    Js.Console.log(`Selected Meal {id -> Belt.Int.toString}`)
-    setSelectedMeal(_ => id)
+    let id = ReactEvent.Mouse.currentTarget(event)
+    Js.Console.log(id)
+    //setSelectedMeal(_ => id)
   }
   <section className="section-center">
   {meals 

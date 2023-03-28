@@ -52,7 +52,10 @@ module Root = {
     switch state {
     | NotAsked => <Spinner />
     | GotError(e) => <Error msg={e} />
-    | _ => <Context.Provider value={state}><App handleSearchTermChange searchTerm showModal setShowModal setSelectedMeal/></Context.Provider>
+    | _ => 
+      <Context.Provider value={state}>
+        <App handleSearchTermChange searchTerm showModal setShowModal selectedMeal setSelectedMeal />
+      </Context.Provider>
     }
   }
 }
