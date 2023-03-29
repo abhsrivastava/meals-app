@@ -49,7 +49,7 @@ html {
   --borderRadius: 0.25rem;
   --letterSpacing: 1px;
   --transition: 0.3s ease-in-out all;
-  --max-width: 1120px;
+  --max-width: 90;
   --fixed-width: 600px;
   --view-width: 90vw;
   /* box shadow*/
@@ -160,6 +160,7 @@ ul {
 
 .section-center {
   padding: 3rem 0;
+  background: var(--green-light);
   width: var(--view-width);
   max-width: var(--max-width);
   margin: 0 auto;
@@ -192,7 +193,7 @@ ul {
 }
 
 .search-container {
-  height: 5rem;
+  height: 6rem;
   background: var(--white);
   display: flex;
   align-items: center;
@@ -245,7 +246,7 @@ ul {
 }
 
 .modal-img {
-  height: 15rem;
+  height: 20rem;
   border-top-left-radius: var(--borderRadius);
   border-top-right-radius: var(--borderRadius);
 }
@@ -273,4 +274,44 @@ ul {
 
 .modal-content a:hover {
   color: var(--black);
+}
+
+.favorites-content {
+  background: var(--black);
+  color: var(--white);
+  padding: 1rem 0;
+  width: var(--view-width);
+  max-width: var(--max-width);
+  margin: 0px auto;
+}
+
+.favorites-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.favorites-item {
+  text-align: center;
+}
+
+.favorites-img {
+  width: 60px;
+  border-radius: 50%;
+  border: 5px solid var(--white);
+  cursor: pointer;
+}
+
+.remove-btn {
+  margin-top: 0.25rem;
+  background: transparent;
+  color: var(--white);
+  border: transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.5rem;
+}
+
+.remove-btn::hover {
+  color: var(--red-dark);
 }

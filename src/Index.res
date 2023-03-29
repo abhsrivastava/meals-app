@@ -14,7 +14,8 @@ module Root = {
                   Context.GotResult({
                     meals: mealsArray,
                     categories: categoryArray,
-                    areas: areaArray
+                    areas: areaArray,
+                    favorites: []
                   }) -> resolve
                 | Error(e) => Context.GotError(e) -> resolve
                 }
@@ -32,7 +33,21 @@ module Root = {
     let (searchTerm, setSearchTerm) = React.useState(() => "chicken")
     let (showModal, setShowModal) = React.useState(() => false)
     let (selectedMeal, setSelectedMeal) = React.useState(() => 0)
+    let (favorites, setFavorites) = React.useState(() => [])
 
+    let addToFavorites = (meal: Meal.mealSummary) => {
+      setFavorites(_ => {
+        if (favorites -> Belt.Array.some((m: Meal.mealSummary) => m.id == meal.id)) {
+          favorites
+        } else {
+          favorites -> Belt.Array.concat([meal])
+        }
+      })
+    }
+
+    let removeFromFavorites = (meal: Meal.mealSummary) => {
+      setFavorites(_ => favorites -> Belt.Array.keep(x => x.id != meal.id))
+    }
     let handleSearchTermChange = (msg: Context.msg) => {
       switch msg {
         | Context.RandomMeal => setSearchTerm(_ => "")
@@ -54,7 +69,7 @@ module Root = {
     | GotError(e) => <Error msg={e} />
     | _ => 
       <Context.Provider value={state}>
-        <App handleSearchTermChange searchTerm showModal setShowModal selectedMeal setSelectedMeal />
+        <App handleSearchTermChange searchTerm showModal setShowModal selectedMeal setSelectedMeal favorites addToFavorites removeFromFavorites/>
       </Context.Provider>
     }
   }
