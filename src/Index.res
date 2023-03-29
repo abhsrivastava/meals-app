@@ -15,7 +15,18 @@ module Root = {
                     meals: mealsArray,
                     categories: categoryArray,
                     areas: areaArray,
-                    favorites: []
+                    favorites: switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
+                    | Some(jsonStr) => 
+                      switch jsonStr -> Js.Json.parseExn -> Meal.parseMealSummaryArray {
+                      | Ok(result) => result
+                      | Error(s) => 
+                        Js.Console.log(`Error in parsing json ${s}`)
+                        []
+                      }
+                    | None => 
+                      Js.Console.log("favorites not found in local storage")
+                      []
+                    }
                   }) -> resolve
                 | Error(e) => Context.GotError(e) -> resolve
                 }
@@ -43,11 +54,14 @@ module Root = {
           favorites -> Belt.Array.concat([meal])
         }
       })
+      Dom.Storage2.setItem(Dom.Storage2.localStorage, "favorites", favorites -> Js.Json.stringifyAny -> Belt.Option.getExn)
     }
 
     let removeFromFavorites = (meal: Meal.mealSummary) => {
       setFavorites(_ => favorites -> Belt.Array.keep(x => x.id != meal.id))
+      Dom.Storage2.setItem(Dom.Storage2.localStorage, "favorites", favorites -> Js.Json.stringifyAny -> Belt.Option.getExn)
     }
+
     let handleSearchTermChange = (msg: Context.msg) => {
       switch msg {
         | Context.RandomMeal => setSearchTerm(_ => "")

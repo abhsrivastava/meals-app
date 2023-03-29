@@ -44,6 +44,15 @@ let parseMealSummary = (json: Js.Json.t) : mealSummary => {
   | _ => raise(PARSE_FAILED("Meals is not an object"))
   }
 }
+
+let parseMealSummaryArray = (json: Js.Json.t) : result<array<mealSummary>, string> => {
+  switch json -> classify {
+  | JSONArray(array) => 
+    Ok(array -> Belt.Array.map(jsonItem => parseMealSummary(jsonItem)))
+  | _ => Error("an array of meal summary objects was expected")
+  }
+}
+
 let parseMealDetail = (json: Js.Json.t): mealDetail => {
   switch json -> classify {
   | JSONObject(obj) => 

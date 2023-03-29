@@ -2,5 +2,7 @@
 
 @react.component
 let make = () => {
-    <div className="loader" />
+    <div className="loader-container">
+      <div className="loader" />
+    </div>
 }
