@@ -15,17 +15,23 @@ module Root = {
                     meals: mealsArray,
                     categories: categoryArray,
                     areas: areaArray,
-                    favorites: switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
-                    | Some(jsonStr) => 
-                      switch jsonStr -> Js.Json.parseExn -> Meal.parseMealSummaryArray {
-                      | Ok(result) => result
-                      | Error(s) => 
-                        Js.Console.log(`Error in parsing json ${s}`)
+                    favorites: 
+                    try {
+                      switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
+                      | Some(jsonStr) => 
+                        switch jsonStr -> Js.Json.parseExn -> Meal.parseMealSummaryArray {
+                        | Ok(result) => result
+                        | Error(s) => 
+                          Js.Console.log(`Error in parsing json ${s}`)
+                          []
+                        }
+                      | None => 
+                        Js.Console.log("favorites not found in local storage")
                         []
                       }
-                    | None => 
-                      Js.Console.log("favorites not found in local storage")
-                      []
+                    }
+                    catch {
+                    | _ => []
                     }
                   }) -> resolve
                 | Error(e) => Context.GotError(e) -> resolve
