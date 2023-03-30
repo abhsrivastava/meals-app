@@ -72,7 +72,6 @@ module Root = {
 
     // load favorites from local storage
     let _ = React.useEffect0(() => {
-      Js.Console.log(`came inside second use Effect`)
       let favList = try {
         switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
         | Some(jsonStr) => 

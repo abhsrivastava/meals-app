@@ -192,6 +192,30 @@ ul {
   box-shadow: var(--shadow-4);
 }
 
+.single-meal footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 50px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.single-meal footer h5 {
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+}
+
+.like-btn {
+  width: 40px;
+  height: 40px;
+}
+
 .search-container {
   height: 6rem;
   background: var(--white);
