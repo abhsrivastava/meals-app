@@ -14,25 +14,7 @@ module Root = {
                   Context.GotResult({
                     meals: mealsArray,
                     categories: categoryArray,
-                    areas: areaArray,
-                    favorites: 
-                    try {
-                      switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
-                      | Some(jsonStr) => 
-                        switch jsonStr -> Js.Json.parseExn -> Meal.parseMealSummaryArray {
-                        | Ok(result) => result
-                        | Error(s) => 
-                          Js.Console.log(`Error in parsing json ${s}`)
-                          []
-                        }
-                      | None => 
-                        Js.Console.log("favorites not found in local storage")
-                        []
-                      }
-                    }
-                    catch {
-                    | _ => []
-                    }
+                    areas: areaArray
                   }) -> resolve
                 | Error(e) => Context.GotError(e) -> resolve
                 }
@@ -64,8 +46,9 @@ module Root = {
     }
 
     let removeFromFavorites = (meal: Meal.mealSummary) => {
-      setFavorites(_ => favorites -> Belt.Array.keep(x => x.id != meal.id))
-      Dom.Storage2.setItem(Dom.Storage2.localStorage, "favorites", favorites -> Js.Json.stringifyAny -> Belt.Option.getExn)
+      let newFavorites = favorites -> Belt.Array.keep(x => x.id != meal.id)
+      setFavorites(_ => newFavorites)
+      Dom.Storage2.setItem(Dom.Storage2.localStorage, "favorites", newFavorites -> Js.Json.stringifyAny -> Belt.Option.getExn)
     }
 
     let handleSearchTermChange = (msg: Context.msg) => {
@@ -78,12 +61,40 @@ module Root = {
       }
     }
     let (state, setState) = React.useState(() => Context.NotAsked)
+    
+    // load data from API
     let _ = React.useEffect1(() => {
       getDefaultState(searchTerm)
       -> then(contextResult => setState(_ => contextResult) -> resolve) 
       -> ignore
       None
     }, [searchTerm])
+
+    // load favorites from local storage
+    let _ = React.useEffect0(() => {
+      Js.Console.log(`came inside second use Effect`)
+      let favList = try {
+        switch Dom.Storage2.getItem(Dom.Storage2.localStorage, "favorites") {
+        | Some(jsonStr) => 
+          switch jsonStr -> Js.Json.parseExn -> Meal.parseMealArrayFromLocalStorage {
+          | Ok(result) => result
+          | Error(s) => 
+            Js.Console.log(`Error in parsing json ${s}`)
+            []
+          }
+        | None => 
+          Js.Console.log("favorites not found in local storage")
+          []
+        }
+      }
+      catch {
+      | e => 
+        Js.Console.log(e)
+        []
+      }
+      setFavorites(_ => favList)
+      None
+    })
     switch state {
     | NotAsked => <Spinner />
     | GotError(e) => <Error msg={e} />

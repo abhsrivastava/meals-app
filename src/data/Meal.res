@@ -22,6 +22,16 @@ type mealSummary = {
 
 exception PARSE_FAILED(string)
 
+let getInt = (obj: Js.Dict.t<Js.Json.t>, key: string) : int => {
+  switch obj -> Js.Dict.get(key) {
+  | Some(valueObj) => 
+    switch valueObj -> classify {
+    | JSONNumber(num) => num -> Belt.Int.fromFloat
+    | _ => raise(PARSE_FAILED(`${key} is not a number`))
+    }
+  | None => raise(PARSE_FAILED(`${key} not found`))
+  }
+}
 let getValue = (obj: Js.Dict.t<Js.Json.t>, key: string) : string => {
   switch obj -> Js.Dict.get(key) {
   | Some(valueObj) => 
@@ -45,6 +55,22 @@ let parseMealSummary = (json: Js.Json.t) : mealSummary => {
   }
 }
 
+let parseMealArrayFromLocalStorage = (json: Js.Json.t) : result<array<mealSummary>, string> => {
+  switch json -> classify {
+  | JSONArray(array) => 
+    Ok(array -> Belt.Array.map(jsonItem => { 
+      switch jsonItem -> classify {
+      | JSONObject(obj) => 
+        let id = obj -> getInt("id")
+        let mealName = obj -> getValue("mealName")
+        let thumbnail = obj -> getValue("thumbnail")
+        {id, mealName, thumbnail}
+      | _ => raise(PARSE_FAILED("Meals is not an object"))
+      }      
+    }))
+  | _ => Error("an array of meal summary objects was expected")
+  }
+}
 let parseMealSummaryArray = (json: Js.Json.t) : result<array<mealSummary>, string> => {
   switch json -> classify {
   | JSONArray(array) => 

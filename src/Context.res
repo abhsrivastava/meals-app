@@ -9,8 +9,7 @@ type state =
   | GotResult({
     meals: array<Meal.mealSummary>,
     categories: array<Category.category>,
-    areas: array<string>,
-    favorites: array<Meal.mealSummary>
+    areas: array<string>
   })
 
 let context = React.createContext(NotAsked)
