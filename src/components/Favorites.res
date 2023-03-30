@@ -14,7 +14,7 @@ let make = (~favorites : array<Meal.mealSummary>, ~removeFromFavorites, ~setSele
       <div className="favorites-container">
       {favorites -> Belt.Array.map(fav => {
         <div key={fav.id -> Belt.Int.toString} id={fav.id -> Belt.Int.toString} className="favorites-item">
-          <img src={fav.thumbnail} className="favorites-img img" onClick={handleImageClick(fav)} />
+          <img src={fav.thumbnail} className="favorites-img img" onClick={handleImageClick(fav)} title={fav.mealName} />
           <button className="remove-btn" onClick={handleRemoveClick(fav)}>{"remove" -> React.string}</button>
         </div>
       }) -> React.array}
